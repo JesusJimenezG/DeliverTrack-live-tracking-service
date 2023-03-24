@@ -1,5 +1,6 @@
 import express from 'express';
-import validateToken from 'session-authentication-middleware';
+// import validateToken from 'session-authentication-middleware';
+import validateToken from '../../../session-authentication-middleware/middleware/session';
 import BotController from '../controller/bot.controller';
 
 const router = express.Router();
@@ -37,7 +38,9 @@ router.delete(
 
 router.post(
     '/start-bots',
-    (req, res, next) => validateToken(req, res, next, secret),
+    (req, res, next) => {
+        validateToken(req, res, next, secret);
+    },
     BotController.startBots
 );
 
