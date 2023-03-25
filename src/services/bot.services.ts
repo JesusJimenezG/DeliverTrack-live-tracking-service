@@ -1,7 +1,6 @@
 import { redisClient } from '../client/redis.client';
-import { Bot, mockBots } from '../models/bot.mock';
+import { Bot } from '../models/bot.mock';
 import { BOT } from '../constants/constants';
-import { emitBotLocation } from './io.services';
 
 // Add a bot to Redis
 const addBot = async (bot: Bot): Promise<number> => {
@@ -51,27 +50,29 @@ const getBot = async (id: string): Promise<Bot> => {
 };
 
 // Update a bot in Redis
-const updateBot = async (bot: Bot): Promise<number> => {
+const updateBot = async (bot: Bot): Promise<string> => {
     console.log(`updating bot...`);
     if (!redisClient.isOpen) {
         await redisClient.connect();
     }
 
-    return await redisClient.hSet('bots', bot.id, JSON.stringify(bot));
+    await redisClient.hSet('bots', bot.id, JSON.stringify(bot));
+    return bot.id;
 };
 
 // Delete a bot from Redis
-const deleteBot = async (id: string): Promise<number> => {
+const deleteBot = async (id: string): Promise<string> => {
     console.log(`Deleting bot...`);
     if (!redisClient.isOpen) {
         await redisClient.connect();
     }
 
-    return await redisClient.hDel('bots', id);
+    await redisClient.hDel('bots', id);
+    return id;
 };
 
 // Change all bots status to STARTED
-const startEngines = async (): Promise<number[]> => {
+const startEngines = async (): Promise<string[]> => {
     console.log(`Starting engines... 🤖`);
     if (!redisClient.isOpen) {
         await redisClient.connect();
@@ -82,14 +83,15 @@ const startEngines = async (): Promise<number[]> => {
     const updates = [];
     for (const bot of bots) {
         bot.status = BOT.STARTED;
-        const botUpdated = await updateBot(bot);
-        updates.push(botUpdated);
+        await updateBot(bot);
+
+        updates.push(bot.id);
     }
     return updates;
 };
 
 // Change all bots status to IDLE
-const shutdownEngines = async (): Promise<number[]> => {
+const shutdownEngines = async (): Promise<string[]> => {
     console.log(`Stopping engines... 🤖`);
     if (!redisClient.isOpen) {
         await redisClient.connect();
@@ -100,15 +102,15 @@ const shutdownEngines = async (): Promise<number[]> => {
     const updates = [];
     for (const bot of bots) {
         bot.status = BOT.IDLE;
-        const botUpdated = await updateBot(bot);
-        updates.push(botUpdated);
+        await updateBot(bot);
+        updates.push(bot.id);
     }
 
     return updates;
 };
 
 // Start moving all bots
-const startMovingBots = async (): Promise<number[]> => {
+const startMovingBots = async (): Promise<string[]> => {
     console.log(`Starting moving bots... 🤖`);
     if (!redisClient.isOpen) {
         await redisClient.connect();
@@ -119,14 +121,14 @@ const startMovingBots = async (): Promise<number[]> => {
     const updates = [];
     for (const bot of bots) {
         bot.status = BOT.MOVING;
-        const botUpdated = await updateBot(bot);
-        updates.push(botUpdated);
+        await updateBot(bot);
+        updates.push(bot.id);
     }
     return updates;
 };
 
 // Stop moving all bots
-const stopMovingBots = async (): Promise<number[]> => {
+const stopMovingBots = async (): Promise<string[]> => {
     console.log(`Stopping moving bots... 🤖`);
     if (!redisClient.isOpen) {
         await redisClient.connect();
@@ -136,15 +138,15 @@ const stopMovingBots = async (): Promise<number[]> => {
 
     const updates = [];
     for (const bot of bots) {
-        bot.status = BOT.IDLE;
-        const botUpdated = await updateBot(bot);
-        updates.push(botUpdated);
+        bot.status = BOT.STOPPED;
+        await updateBot(bot);
+        updates.push(bot.id);
     }
     return updates;
 };
 
 // Start moving a single bot
-const startMovingBot = async (id: string): Promise<number> => {
+const startMovingBot = async (id: string): Promise<string> => {
     console.log(`Starting moving bot... 🤖`);
     if (!redisClient.isOpen) {
         await redisClient.connect();
@@ -152,11 +154,12 @@ const startMovingBot = async (id: string): Promise<number> => {
 
     const bot = await getBot(id);
     bot.status = BOT.MOVING;
-    return await updateBot(bot);
+    await updateBot(bot);
+    return bot.id;
 };
 
 // Stop moving a single bot
-const stopMovingBot = async (id: string): Promise<number> => {
+const stopMovingBot = async (id: string): Promise<string> => {
     console.log(`Stopping moving bot... 🤖`);
     if (!redisClient.isOpen) {
         await redisClient.connect();
@@ -164,23 +167,8 @@ const stopMovingBot = async (id: string): Promise<number> => {
 
     const bot = await getBot(id);
     bot.status = BOT.IDLE;
-    return await updateBot(bot);
-};
-
-// Set mock bots in Redis
-const setMockBots = async (): Promise<number[]> => {
-    console.log(`Setting mock bots...`);
-    if (!redisClient.isOpen) {
-        await redisClient.connect();
-    }
-
-    const updates = [];
-    for (const bot of mockBots) {
-        // emitBotLocation(bot);
-        const botUpdated = await updateBot(bot);
-        updates.push(botUpdated);
-    }
-    return updates;
+    await updateBot(bot);
+    return bot.id;
 };
 
 export {
@@ -194,7 +182,5 @@ export {
     startMovingBots,
     stopMovingBots,
     startMovingBot,
-    stopMovingBot,
-    setMockBots,
-    emitBotLocation
+    stopMovingBot
 };

@@ -1,11 +1,16 @@
 // Import required modules
 import express from 'express';
 import http from 'http';
-import { setMockBots } from './services/bot.services';
 import cors from 'cors';
 import { router } from './routes';
 import cookieParser from 'cookie-parser';
 import { Server } from 'socket.io';
+import { IOMiddleware } from './middleware/io.middleware';
+import {
+    startBotLocationInterval,
+    stopBotLocationInterval
+} from './services/bot.io.services';
+// import { setMockBots } from './models/bot.mock';
 
 // Set up Express app and HTTP server
 const app = express();
@@ -21,7 +26,8 @@ app.use(express.urlencoded({ extended: true }));
 export const httpServer = http.createServer(app);
 
 // Set up bots
-setMockBots();
+// Initialize the mock bots whenever we need new data in redis
+// setMockBots();
 
 // Set up SocketIO server
 export const io = new Server(httpServer, {
@@ -36,30 +42,24 @@ export const io = new Server(httpServer, {
         ]
     }
 });
+IOMiddleware(io);
 
 io.on('connection', (socket) => {
     console.log(`User ${socket.id} connected`);
-    // updateBots();
 
+    socket.on('/start-moving-bots', () => {
+        console.log(`🤖 Start moving those Wall-e's arround...`);
+
+        // Start emitting bot locations
+        startBotLocationInterval();
+    });
+    socket.on('/stop-moving-bots', () => {
+        console.log(`🤖 Stop moving Wall-e's arround...`);
+        stopBotLocationInterval();
+    });
     socket.on('disconnect', () => {
         console.log(`User ${socket.id} disconnected`);
     });
-});
-
-io.use((socket, next) => {
-    // Get the request object from the socket
-    const req = socket.request;
-    console.log(`soketio middleware`);
-
-    // Check if the request URL matches the endpoint you want to target
-    if (req.url === '/api/live-tracking/start-moving-bots') {
-        // Emit a socket.io event when the client enters the endpoint
-        io.emit('updateBotLocations', {
-            message: 'Bot locations updated'
-        });
-    }
-
-    next();
 });
 
 // Set up routes

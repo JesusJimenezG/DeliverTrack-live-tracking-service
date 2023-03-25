@@ -1,6 +1,6 @@
 import express from 'express';
-// import validateToken from 'session-authentication-middleware';
-import validateToken from '../../../session-authentication-middleware/middleware/session';
+import { validateToken } from 'session-authentication-middleware/middleware/session';
+// import validateToken from '../../../session-authentication-middleware/middleware/session';
 import BotController from '../controller/bot.controller';
 
 const router = express.Router();
@@ -15,7 +15,7 @@ router.post(
 router.get(
     '/get-bots',
     (req, res, next) => validateToken(req, res, next, secret),
-    BotController.getAllBots
+    BotController.getBots
 );
 
 router.get(

@@ -1,4 +1,6 @@
 import { BOT } from '../constants/constants';
+import { redisClient } from '../client/redis.client';
+import { updateBot } from '../services/bot.services';
 
 export interface Bot {
     id: string;
@@ -36,3 +38,19 @@ export const mockBots: Bot[] = [
         }
     }
 ];
+
+// Set mock bots in Redis
+export const setMockBots = async (): Promise<string[]> => {
+    console.log(`Setting mock bots...`);
+    if (!redisClient.isOpen) {
+        await redisClient.connect();
+    }
+
+    const updates = [];
+    for (const bot of mockBots) {
+        // emitBotLocation(bot);
+        await updateBot(bot);
+        updates.push(bot.id);
+    }
+    return updates;
+};
