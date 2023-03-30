@@ -1,6 +1,6 @@
-import { io } from '../app';
-import { BOT } from '../constants/constants';
-import { getAllBots, updateBot } from '../services/bot.services';
+import { io } from '../../..';
+import { BOT } from '../../../utils/constants';
+import { getAllBots, updateBot } from './bot.services';
 
 // Define a function to emit bot location data to the client
 export const emitBotsLocation = async () => {

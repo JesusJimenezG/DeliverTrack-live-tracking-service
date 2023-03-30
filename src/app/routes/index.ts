@@ -1,7 +1,7 @@
 import express from 'express';
 import { validateToken } from 'session-authentication-middleware/middleware/session';
 // import validateToken from '../../../session-authentication-middleware/middleware/session';
-import BotController from '../controller/bot.controller';
+import BotController from '../bots/controller/bot.controller';
 
 const router = express.Router();
 const secret = process.env.JWT_SECRET || 'secret';

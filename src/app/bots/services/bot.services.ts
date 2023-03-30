@@ -1,6 +1,6 @@
-import { redisClient } from '../client/redis.client';
+import { redisClient } from '../../../redis/redis.client';
 import { Bot } from '../models/bot.mock';
-import { BOT } from '../constants/constants';
+import { BOT } from '../../../utils/constants';
 
 // Add a bot to Redis
 const addBot = async (bot: Bot): Promise<number> => {

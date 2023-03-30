@@ -1,5 +1,5 @@
-import { BOT } from '../constants/constants';
-import { redisClient } from '../client/redis.client';
+import { redisClient } from '../../../redis/redis.client';
+import { BOT } from '../../../utils/constants';
 import { updateBot } from '../services/bot.services';
 
 export interface Bot {
