@@ -1,5 +1,5 @@
 import { Server } from 'socket.io';
-import { IOMiddleware } from 'session-authentication-middleware/middleware/io.middleware';
+import { IOMiddleware } from 'delivertrack-middlewares/middleware/io.middleware';
 import {
     startBotLocationInterval,
     stopBotLocationInterval

@@ -1,8 +1,8 @@
 {
-  "name": "bot-live-tracking-service",
+  "name": "delivertrack-live-tracking-service",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.ts",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only --ignore-watch node_modules src/index.ts",
     "docker:rebuild": "docker-compose down && docker-compose rm -f live-tracking-service && docker-compose build live-tracking-service && docker-compose up",
@@ -18,9 +18,9 @@
     "cookie": "0.5.0",
     "cookie-parser": "1.4.6",
     "cors": "2.8.5",
+    "delivertrack-middlewares": "file:delivertrack-middlewares-0.0.1.tgz",
     "express": "4.18.2",
     "redis": "4.6.5",
-    "session-authentication-middleware": "file:session-authentication-middleware-1.0.0.tgz",
     "socket.io": "4.6.1"
   },
   "devDependencies": {

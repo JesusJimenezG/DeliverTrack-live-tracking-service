@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import * as BotServices from '../services/bot.services';
-import ResponseHandler from 'session-authentication-middleware/utils/network.handler';
+import ResponseHandler from 'delivertrack-middlewares/utils/network.handler';
 
 const addBot = async (req: Request, res: Response) => {
     try {

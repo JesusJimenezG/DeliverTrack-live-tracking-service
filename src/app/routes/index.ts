@@ -1,6 +1,5 @@
 import express from 'express';
-import { validateToken } from 'session-authentication-middleware/middleware/session';
-// import validateToken from '../../../session-authentication-middleware/middleware/session';
+import { validateToken } from 'delivertrack-middlewares/middleware/session';
 import BotController from '../bots/controller/bot.controller';
 
 const router = express.Router();
