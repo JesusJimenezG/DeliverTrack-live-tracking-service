@@ -1,9 +1,10 @@
 import express from 'express';
 import { validateToken } from 'delivertrack-middlewares/middleware/session';
 import BotController from '../bots/controller/bot.controller';
+import config from '../../config/config';
 
 const router = express.Router();
-const secret = process.env.JWT_SECRET || 'secret';
+const secret = config.secret.jwt_secret;
 
 router.post(
     '/add-bot',

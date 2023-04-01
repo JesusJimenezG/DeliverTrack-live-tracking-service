@@ -1,6 +1,7 @@
 import { createApp } from './app/app';
 import { createServer } from './server/server';
 import { createIO } from './server/io.server';
+import config from './config/config';
 
 const app = createApp();
 const httpServer = createServer(app);
@@ -11,8 +12,8 @@ const io = createIO(httpServer);
 // setMockBots();
 
 // Start server
-const PORT = process.env.PORT || 4001;
-const HOST = process.env.HOST || 'localhost';
+const PORT = config.server.port;
+const HOST = config.server.host;
 httpServer.listen(PORT, () => {
     console.log(`🤖 Live tracking system started on http://${HOST}:${PORT}`);
 });

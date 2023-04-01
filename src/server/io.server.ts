@@ -5,8 +5,9 @@ import {
     stopBotLocationInterval
 } from '../app/bots/services/bot.io.services';
 import http from 'http';
+import config from '../config/config';
 
-const jwt_secret = process.env.JWT_SECRET || 'secret';
+const jwt_secret = config.secret.jwt_secret;
 
 export const createIO = (httpServer: http.Server) => {
     // Set up SocketIO server
